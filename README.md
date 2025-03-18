@@ -19,7 +19,7 @@ This combination of technologies ensures a robust, scalable, and user-friendly c
 1. **Clone the Repository**:  
     Clone the repository to your local machine using the following command:
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/hariteja007/mental-health-RAG.git
     ```
 
 2. **Navigate to the Project Directory**:  
