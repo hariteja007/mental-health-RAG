@@ -1,0 +1,615 @@
+<div class="spinner hidden" id="spinner"></div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DhyanaAI</title>
+    <style>
+      /* Global styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        margin: 0;
+
+        padding: 0;
+
+        height: 80vh; /* Full viewport height */
+
+        width: 100vw; /* Full viewport width */
+
+        background-image: url("{{ url_for('static', filename='images/bg.jpeg') }}");
+
+        background-size: cover; /* Image will fully cover the screen */
+
+        background-position: center; /* Center the image */
+
+        background-repeat: no-repeat; /* Prevent image from repeating */
+
+        background-attachment: fixed; /* Image stays fixed during scrolling */
+
+        color: white;
+
+        line-height: 1.6;
+      }
+
+      /* Navigation bar */
+
+      nav {
+        background-color: #000000;
+
+        display: flex;
+
+        padding: 15px 30px;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        position: relative;
+      }
+
+      nav .brand {
+        font-size: 1.8rem;
+
+        font-weight: bold;
+
+        color: white;
+      }
+
+      nav .menu {
+        display: flex;
+
+        gap: 25px;
+
+        align-items: center;
+      }
+
+      nav .menu a {
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 1rem;
+
+        transition: color 0.3s;
+      }
+
+      nav .menu a:hover {
+        color: #00aaff;
+      }
+
+      img {
+        width: 90px;
+      }
+
+      /* Dropdown Container */
+
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown-content {
+        display: none;
+
+        position: absolute;
+
+        top: 100%;
+
+        left: 0;
+
+        background-color: #2e3348;
+
+        border-radius: 6px;
+
+        min-width: 200px;
+
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+
+        z-index: 100;
+      }
+
+      .dropdown-content a {
+        color: white;
+
+        text-decoration: none;
+
+        padding: 10px 20px;
+
+        display: block;
+
+        transition: background 0.3s ease;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #40475c;
+      }
+
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      /* Main Content */
+
+      .hero {
+        padding: 50px 30px;
+
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+
+        margin-bottom: 20px;
+      }
+
+      /* Chat Container */
+
+      .container {
+        width: 100%;
+
+        max-width: 70vw;
+
+        background-color: #40475c;
+
+        padding: 30px;
+
+        border-radius: 15px;
+
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+
+        display: flex;
+
+        flex-direction: column;
+
+        position: absolute;
+
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        margin-bottom: 80px;
+      }
+
+      .header {
+        text-align: center;
+
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+
+        font-weight: 700;
+
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 16px;
+
+        color: #d3d3d3;
+      }
+
+      .logout-btn {
+        position: absolute;
+
+        top: 35px;
+
+        right: 20px;
+
+        background-color: #f54242;
+
+        color: white;
+
+        padding: 10px 20px;
+
+        border: none;
+
+        border-radius: 20px;
+
+        cursor: pointer;
+      }
+
+      .options {
+        display: flex;
+
+        justify-content: space-between;
+
+        margin-bottom: 20px;
+      }
+
+      .options button {
+        padding: 10px 20px;
+
+        background-color: #333;
+
+        color: #fff;
+
+        border: none;
+
+        border-radius: 5px;
+
+        cursor: pointer;
+      }
+
+      .chat-history {
+        flex-grow: 1;
+
+        overflow-y: auto;
+
+        margin-bottom: 20px;
+
+        padding: 15px;
+
+        max-height: 500px;
+
+        border-radius: 10px;
+
+        background-color: #292929;
+      }
+
+      .chat-message {
+        display: flex;
+
+        margin-bottom: 15px;
+      }
+
+      .chat-message.user {
+        justify-content: flex-end;
+      }
+
+      .chat-message.bot {
+        justify-content: flex-start;
+      }
+
+      .message-bubble {
+        max-width: 75%;
+
+        padding: 15px;
+
+        border-radius: 20px;
+
+        font-size: 16px;
+
+        word-wrap: break-word;
+      }
+
+      .message-bubble.user {
+        background-color: #0078ff;
+
+        color: #fff;
+      }
+
+      .message-bubble.bot {
+        background-color: #444;
+
+        color: #fff;
+      }
+
+      .message-bubble ul {
+        padding-left: 20px;
+
+        margin: 0;
+      }
+
+      .message-bubble li {
+        margin-bottom: 5px;
+
+        list-style-type: disc;
+
+        color: #fff;
+
+        font-size: 16px;
+      }
+
+      .input-area {
+        display: flex;
+
+        align-items: center;
+      }
+
+      .input-area input {
+        flex-grow: 1;
+
+        padding: 15px;
+
+        background-color: #292929;
+
+        color: #fff;
+
+        border: 1px solid #555;
+
+        border-radius: 25px;
+
+        margin-right: 10px;
+
+        outline: none;
+      }
+
+      .input-area button {
+        background-color: #0078ff;
+
+        color: #fff;
+
+        border: none;
+
+        width: 3em;
+        height: 3em;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        border-radius: 50%;
+
+        cursor: pointer;
+      }
+
+      /* Floating Action Button */
+
+      .fab {
+        position: fixed;
+
+        right: 20px;
+
+        bottom: 20px;
+
+        background-color: #0078ff;
+
+        color: white;
+
+        font-size: 2rem;
+
+        border-radius: 50%;
+
+        padding: 20px;
+
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+
+        cursor: pointer;
+
+        z-index: 1000;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+      }
+
+      /* Chat Window (Initially Visible) */
+
+      .chat-container {
+        display: block;
+      }
+
+      /* Hide chat container */
+
+      .chat-container.hidden {
+        display: none;
+      }
+
+      .chat-container .hide-chat {
+        position: absolute;
+
+        top: 10px;
+
+        right: 10px;
+
+        background-color: #f54242;
+
+        color: white;
+
+        padding: 10px 20px;
+
+        border-radius: 15px;
+
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+
+    <nav>
+      <a href="#">
+        <img
+          src="{{ url_for('static', filename='images/logo.jpeg') }}"
+          alt="Logo"
+        />
+      </a>
+
+      <div class="brand"></div>
+
+      <div class="menu">
+        <a href="{{ url_for('about') }}">About</a>
+
+        <a href="{{ url_for('features') }}">Features</a>
+
+        <div class="dropdown">
+          <a href="#">Resources &#9662;</a>
+
+          <div class="dropdown-content">
+            <a href="{{ url_for('educationalsupport') }}">Educational Content</a>
+
+            <a href="{{ url_for('faq') }}">FAQ Section</a>
+
+            <a href="{{ url_for('crisis') }}">Crisis Support</a>
+          </div>
+        </div>
+
+        <a href="{{ url_for('feedback') }}">Feedback</a>
+      </div>
+
+      <!-- Logout Button -->
+
+      <form action="{{ url_for('logout') }}" method="POST">
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
+    </nav>
+
+    <!-- Chat Container (Initially Visible) -->
+
+    <div class="chat-container" id="chat-container">
+      <div class="container">
+        <!-- Close Button -->
+
+        <button class="hide-chat" id="close-chat-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-x-circle"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"
+            />
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"
+            />
+          </svg>
+        </button>
+
+        <!-- Header -->
+
+        <div class="header">
+          <h1>DhyanaAI</h1>
+
+          <p>Ask me something related to mental health:</p>
+        </div>
+
+        <!-- Options -->
+
+        <div class="options">
+          <form method="POST">
+            <button type="submit" name="clear_history">
+              Clear Chat History
+            </button>
+          </form>
+        </div>
+
+        <!-- Chat History -->
+
+        <div class="chat-history" id="chat-history">
+          {% for message in chat_history %}
+
+          <div class="chat-message {{ message['role'] }}">
+            <div class="message-bubble {{ message['role'] }}">
+              {% if message['is_list'] %}
+
+              <ul>
+                {% for item in message['content'] %}
+
+                <li>{{ item }}</li>
+
+                {% endfor %}
+              </ul>
+
+              {% else %} {{ message['content'] }} {% endif %}
+            </div>
+          </div>
+
+          {% endfor %}
+        </div>
+
+        <!-- Input Area -->
+
+        <form method="POST" class="input-area" onsubmit="userInteracted()">
+          <input
+            type="text"
+            name="user_message"
+            placeholder="Type your question..."
+            required
+            autocomplete="off"
+            {% if chat_disabled %} disabled {% endif %}
+          />
+
+          <button type="submit">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-send"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"
+              />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Floating Action Button (FAB) -->
+
+    <div class="fab" onclick="toggleChatContainer()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"
+        />
+        <path
+          d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
+        />
+      </svg>
+    </div>
+
+    <script>
+      // Toggle chat visibility
+
+      function toggleChatContainer() {
+        const chatContainer = document.getElementById("chat-container");
+
+        chatContainer.classList.toggle("hidden");
+      }
+
+      // Mark chat as interacted to keep open
+
+      function userInteracted() {
+        const chatContainer = document.getElementById("chat-container");
+
+        chatContainer.classList.add("user-interacted");
+
+        scrollToBottom();
+      }
+
+      // Close chat window
+
+      document
+        .getElementById("close-chat-btn")
+        .addEventListener("click", function () {
+          const chatContainer = document.getElementById("chat-container");
+
+          chatContainer.classList.add("hidden");
+        });
+
+      // Scroll to the bottom of the chat window
+
+      function scrollToBottom() {
+        const chatHistory = document.getElementById("chat-history");
+
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+      // Auto-scroll on page load (in case there's initial content)
+
+      window.onload = function () {
+        scrollToBottom();
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,164 @@
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #1c1c1c;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+a {
+    color: #0095f6;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0052cc;
+}
+
+h2 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* Form Container */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Form and Input Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+input.form-control {
+    width: 100%;
+    padding: 12px;
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input.form-control:focus {
+    background-color: #555;
+    border-color: #0095f6;
+    outline: none;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #0095f6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0052cc;
+}
+
+/* Chat History */
+.border {
+    border: 1px solid #555;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 20px;
+    height: 400px;
+    overflow-y: auto;
+    background-color: #333;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.chat-message {
+    margin-bottom: 15px;
+}
+
+.chat-message.bot {
+    color: #f0f0f0;
+}
+
+.chat-message.user {
+    color: #0095f6;
+}
+
+/* Alerts */
+.alert {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #444;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.alert-info {
+    background-color: #4b4b4b;
+}
+
+/* Header and Footer */
+header, footer {
+    background-color: #111;
+    padding: 20px 0;
+    text-align: center;
+}
+
+footer {
+    margin-top: 50px;
+}
+
+footer p {
+    color: #aaa;
+}
+
+footer a {
+    color: #0095f6;
+}
+
+footer a:hover {
+    color: #0052cc;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+
+    button {
+        width: 100%;
+    }
+}
